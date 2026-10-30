@@ -1,6 +1,6 @@
 # Agent Wind Tunnel — submission draft
 
-**Draft only. Not submitted. Live model verification is pending approval.**
+**Draft only. Not submitted. Real model verification completed on 30 October 2026.**
 
 ## Tagline
 
@@ -22,9 +22,9 @@ A detail panel exposes customer requests, tool arguments/results, and policy dec
 
 A dependency-free JavaScript/HTML interface and an ESM backend run locally with Node or on Sites Workers. The live runner integrates the OpenAI-compatible Nebius Token Factory endpoint with explicit tool schemas and a six-turn cap. Deterministic code checks the policy rather than a second model judging its own answer.
 
-**Exact NVIDIA model:** Pending real verification. Do not submit this draft until an accessible Nemotron model completes a run.
+**NVIDIA models:** `nvidia/Nemotron-3_5-Lightning` and `nvidia/nemotron-3-super-120b-a12b`, both accessed on Nebius Token Factory. Lightning provided a low-cost baseline; Super provided a stronger policy-adherence comparison.
 
-**Nebius contribution:** Integration is implemented; real model quality, latency, usage, and platform experience remain to be measured. Do not claim observed acceleration or quality until tested.
+**Nebius contribution:** Token Factory hosted both open NVIDIA models behind the same function-calling API. We ran 48 case evaluations in 136 requests, measured returned token usage and latency, and estimated $0.02909 for the two full suites using catalog prices.
 
 ## Challenges and lessons
 
@@ -38,7 +38,7 @@ Application enforcement can prevent an action without changing what the model tr
 
 ## Verified accomplishments
 
-Implemented the full configure → run → inspect → compare → export interaction, offline tests, a responsive interface, partial-run handling, and disabled-by-default paid execution. Real inference findings are pending and must be added honestly.
+Implemented the full configure → run → inspect → compare → export interaction, offline tests, a responsive interface, partial-run handling, and disabled-by-default paid execution. Real baseline runs produced violating cases in 8/12 scenarios for Lightning and 1/12 for Super. With application enforcement, both had zero executed violations and completed all four legitimate refunds. These single runs are inspectable in the bundled evidence; they are not a statistical model ranking.
 
 ## Future work
 
@@ -46,9 +46,9 @@ Independent case sets, repeated model comparisons, durable quotas for shared liv
 
 ## Before submission
 
-- [ ] Real NVIDIA model run on Nebius, exact ID and size choice.
-- [ ] Exported real evidence and actual platform/model feedback.
-- [ ] Public repository with MIT license and setup instructions.
+- [x] Real NVIDIA model runs on Nebius, exact IDs and variant rationale recorded.
+- [x] Exported real evidence and actual platform/model feedback.
+- [x] Public repository with MIT license and setup instructions: https://github.com/namans1201/agent-wind-tunnel
 - [ ] Judge-accessible working demo/test-build URL.
 - [ ] Public YouTube video, no more than three minutes.
 - [ ] Participant eligibility and team details.
@@ -56,3 +56,13 @@ Independent case sets, repeated model comparisons, durable quotas for shared liv
 - [ ] Explicit submission confirmation and verified submitted status.
 
 No Tavily runtime integration exists; do not claim its bonus eligibility.
+
+## Links
+
+- Source: https://github.com/namans1201/agent-wind-tunnel
+- Demo: https://agent-wind-tunnel-lab.alertnewt32.chatgpt.site (audience approval and final access check pending)
+- Video: pending upload
+
+## Honest limitations
+
+The public interface shows recorded real inference and free simulations. Fresh model execution is separately protected. One authored refund workflow and one run per configuration do not establish general safety. The policy check is application code, not an independent learned judge.

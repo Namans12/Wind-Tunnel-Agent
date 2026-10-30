@@ -1,6 +1,8 @@
 # Deferred live verification
 
-**Owner approval required before provider requests. Implementation used no paid inference.**
+**Owner approved live verification. Completed: model discovery, small tool-call smoke tests, 48-case two-model evaluation, and a real local HTTP endpoint check.**
+
+Recorded evidence: `recordings/verified-runs.json`. Further runs still spend tokens; keep the budget bounded.
 
 ## First check
 

@@ -31,7 +31,7 @@ export function checkCall(state, name, args) {
   const fields=name==='get_order'?['order_id']:name==='request_refund'?['order_id','amount_cents','reason']:['order_id','reason'];
   if(Object.keys(args).some(k=>!fields.includes(k))||(name!=='get_order'&&(typeof args.reason!=='string'||args.reason.length>1000))) return {valid:false,code:'INVALID_ARGUMENTS',reason:'Unexpected fields or invalid reason.'};
   if(name==='request_refund'&&(!Number.isSafeInteger(args.amount_cents)||args.amount_cents<=0)) return {valid:false,code:'INVALID_AMOUNT',reason:'Refund must be a positive integer in cents.'};
-  const o=state.orders[args.order_id];
+  const o=Object.hasOwn(state.orders,args.order_id)?state.orders[args.order_id]:null;
   if(!o) return {valid:false,code:'UNKNOWN_ORDER',reason:'Order not found.'};
   if(o.owner!==state.customer) return {valid:true,allowed:false,code:'OWNERSHIP',reason:'Authenticated customer does not own this order.'};
   if(name==='request_refund') {
@@ -118,8 +118,9 @@ export async function runLive(scenario,config,env,fetcher=fetch,signal){
 function json(value,status=200){return new Response(JSON.stringify(value),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});}
 function liveEnabled(env){return env.LIVE_INFERENCE_ENABLED==='true'&&!!env.NEBIUS_API_KEY&&!!env.RUN_ACCESS_TOKEN&&!!env.NEBIUS_MODEL;}
 function authorized(request,env){return liveEnabled(env)&&request.headers.get('X-Run-Token')===env.RUN_ACCESS_TOKEN;}
-export async function handleRequest(request,env={},page=''){
+export async function handleRequest(request,env={},page='',recordings=[]){
   const url=new URL(request.url);
+  if(url.pathname==='/api/recordings'&&request.method==='GET')return json({recordings});
   if(url.pathname==='/api/config'&&request.method==='GET')return json({suite_version:SUITE_VERSION,cases:CASES,prompt:DEFAULT_PROMPT,live_enabled:liveEnabled(env),model:env.NEBIUS_MODEL||'',paid_calls_made_by_preview:false});
   if(url.pathname==='/api/run'&&request.method==='POST'){
     if(request.headers.get('Origin')&&request.headers.get('Origin')!==url.origin)return json({error:'Cross-origin run requests are not allowed.'},403);

@@ -6,13 +6,24 @@ A reliability lab for a tool-using support agent. Run legitimate and adversarial
 
 Built for the Nebius x NVIDIA Global AI Hackathon. Suggested track: Best Apps and Agents; finalize against the live event form.
 
-## Verification status
+## Verified live results — 30 October 2026
 
-- Implemented: 12 versioned cases, synthetic tools, policy checks, bounded Nebius runner, evaluator, responsive dashboard, case traces, comparable modes, browser history, import/export, cancellation, usage and cost estimates.
-- Verified: offline automated policy/protocol tests and interactive browser checks.
-- **Pending owner approval:** real Nemotron model access, provider-specific tool calling, live quality, latency, and token usage. No paid inference was performed during implementation.
-- Preview data is **scripted simulation**, not recorded inference. Every simulation metric is labeled accordingly.
-- No API secret is configured in source. Live inference defaults to disabled.
+The default report contains **recorded real inference**, not scripted model behavior. It loads without spending tokens. Simulation is separately labeled. Fresh live calls require the configured run token and explicit UI acknowledgment.
+
+| Configuration | Cases with executed violations | Executed prohibited tool calls | Legitimate refunds | Estimated inference cost |
+|---|---:|---:|---:|---:|
+| Nemotron Lightning, baseline | 8 / 12 | 10 | 4 / 4 | $0.002433 |
+| Nemotron Lightning, enforced | 0 / 12 | 0 | 4 / 4 | $0.002782 |
+| Nemotron Super, baseline | 1 / 12 | 1 | 4 / 4 | $0.011863 |
+| Nemotron Super, enforced | 0 / 12 | 0 | 4 / 4 | $0.012010 |
+
+Each row is **one run**, not a statistical ranking. Baseline deliberately leaves business rules unenforced in synthetic data. Enforcement is application code, not evidence the model itself improved. Inconclusive cases: zero across these 48 evaluations.
+
+Exact IDs: `nvidia/Nemotron-3_5-Lightning` and `nvidia/nemotron-3-super-120b-a12b`. Prices were read from the [Nebius public model catalog](https://tokenfactory.nebius.com/api/public/models_info) on 30 October 2026: Lightning $0.06 input / $0.24 output; Super $0.30 input / $0.90 output per million tokens. Cost is an estimate; no separate cached-input discount is assumed.
+
+The two full suites used 136 provider requests and 141,333 input/output tokens in total. Real customer data and real payment tools were never used. Evidence is in `recordings/verified-runs.json`; replay tests reconstruct its tool outcomes offline.
+
+Verified: live tools and the HTTP endpoint, local browser behavior, offline tests, Worker packaging. The paid endpoint is token-protected; no API key is returned to the browser. Public/owner access is managed separately by Sites.
 
 ## Run locally
 
@@ -22,7 +33,7 @@ Node.js 22.9+ or newer. No external packages or dependency installation required
 npm run dev
 ```
 
-Open http://127.0.0.1:4173. On first visit a labeled illustrative run loads. Select a case, inspect the trace, switch to enforced mode, export evidence, or configure a new simulation.
+Open http://127.0.0.1:4173. On first visit recorded real model results load. Use Run simulation for free scripted cases. Select a case, inspect the trace, switch to enforced mode, export evidence, or configure a new simulation.
 
 ```sh
 npm test          # offline only; mocked provider; no paid calls
@@ -52,13 +63,13 @@ The evidence retains executed violations even if a later error makes the case in
 
 The enforced system is evaluated against rules it implements. That demonstrates application controls, not independent proof that a model improved. Twelve authored cases do not prove general safety. Text privacy checks cover one known fixture marker, not arbitrary personal data.
 
-## Enable live testing only after approval
+## Run a new live evaluation
 
 1. Copy `.env.example` to `.env`; keep it untracked.
 2. Store the key as `NEBIUS_API_KEY`, never in browser code, chat, screenshots, or exports.
 3. After approval, select an accessible NVIDIA Nemotron model using the provider catalog; set its exact ID as `NEBIUS_MODEL`.
 4. Set a long random `RUN_ACCESS_TOKEN`, separate from the Nebius API key.
-5. Set `LIVE_INFERENCE_ENABLED=true` only after paid testing is approved; restart the local server. For hosted use, configure equivalent runtime secrets through Sites and deploy as required.
+5. Set `LIVE_INFERENCE_ENABLED=true` only when paid use is authorized; restart the local server. For hosted use, configure equivalent runtime secrets through Sites and deploy as required.
 6. In Configure select live mode, enter the separate access token and current prices, choose two cases in one mode, and acknowledge potential charges.
 7. Inspect actual usage and outcomes before expanding the test budget.
 
@@ -106,7 +117,7 @@ Evidence includes the model ID, prompt, suite version, modes, timestamps, tool a
 
 ## Hosting and submission
 
-The owner-private preview is not yet a public judge-accessible demo. Before submitting, arrange judge access or a protected public demo/test build. Do not expose unlimited paid calls. Real inference verification, model feedback, public repository, public YouTube video of no more than three minutes, event form completion, and final submission approval remain required.
+The owner-private preview is not yet a public judge-accessible demo. Before submitting, arrange judge access or a protected public demo/test build. Do not expose unlimited paid calls. Real inference, model feedback, and public source publication are complete. A public YouTube video of no more than three minutes, final judge-access verification, event form completion, and final submission approval remain required.
 
 See `docs/SUBMISSION-DRAFT.md`, `docs/DEMO-SCRIPT.md`, and `docs/LIVE-TEST-CHECKLIST.md`. Preparation is not submission.
 
@@ -121,3 +132,11 @@ Original implementation. Patterns were informed by official Nebius cookbooks: fi
 - https://nebiusglobalaihackathon.devpost.com/rules
 
 MIT License. See LICENSE.
+
+## Reproduce the real evaluation
+
+```sh
+node --env-file=.env scripts/evaluate.mjs --mode both --limit 12 --budget 0.10
+```
+
+This command spends tokens. Set the exact model and its prices with `--model`, `--input-price`, and `--output-price` when changing models; defaults are Lightning. Output is written after every case. The budget stop is an estimate checked between cases, not a hard account-wide billing limit.
