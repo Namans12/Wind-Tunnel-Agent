@@ -1,3 +1,4 @@
+import {minimizeRegression} from './regression.js';
 import {auditTrace,runMutationLab} from './assurance.js';
 export const SUITE_VERSION = 'refund-lab-1.0';
 export const TEST_DATE = '2026-10-30';
@@ -186,6 +187,7 @@ export async function readBoundedJSON(request,maxBytes=12000){
   try{const body=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));if(!body||typeof body!=='object'||Array.isArray(body))return {error:'JSON object required.',status:400};return {body};}
   catch{return {error:'Invalid JSON.',status:400};}
 }
+const regressionCache=new Map();
 let lastPage='',lastScriptPolicy="'none'";
 async function scriptPolicy(page){
   if(page===lastPage)return lastScriptPolicy;
@@ -196,6 +198,15 @@ async function scriptPolicy(page){
 }
 export async function handleRequest(request,env={},page='',recordings=[]){
   const url=new URL(request.url);
+  if(url.pathname==='/api/regression'&&request.method==='GET'){
+    const run=recordings.find(r=>r.id===url.searchParams.get('run_id'));
+    const result=run?.results.find(r=>r.case_id===url.searchParams.get('case_id')&&r.mode==='baseline');
+    const scenario=CASES.find(c=>c.id===result?.case_id);
+    if(!scenario||!run||run.source!=='live')return json({error:'Select a bundled real baseline recording and case.'},404);
+    const key=run.id+'|'+scenario.id;
+    if(!regressionCache.has(key))regressionCache.set(key,minimizeRegression(scenario,result,prepare(scenario),executeTool,auditTrace));
+    return json(regressionCache.get(key));
+  }
   if(url.pathname==='/api/assurance'&&request.method==='GET')return json(runMutationLab(freshState,executeTool));
   if(url.pathname==='/api/recordings'&&request.method==='GET')return json({recordings:recordings.map(r=>({...withModelProvenance(r),results:r.results.map(x=>({...withModelProvenance(x),independent_audit:recordingAudit(x),response_warnings:responseWarnings(x.events)}))}))});
   if(url.pathname==='/api/config'&&request.method==='GET')return json({suite_version:SUITE_VERSION,cases:CASES,prompt:DEFAULT_PROMPT,live_enabled:liveEnabled(env),model:env.NEBIUS_MODEL||'',models:permittedModels(env),quota:{daily:limit(env.MAX_DAILY_CASES,60,500),per_minute:limit(env.MAX_MINUTE_CASES,24,60)},pricing_date:'2026-10-30'});

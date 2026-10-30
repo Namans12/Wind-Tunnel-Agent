@@ -12,6 +12,12 @@ Built for the Nebius x NVIDIA Global AI Hackathon. Suggested track: Best Apps an
 
 No sign-in is required. Inspect recorded real evidence, run a free simulation, compare policy modes, and export traces. Fresh paid inference requires a private tester token; the Nebius API key is never entered into the browser.
 
+## Turn a failure into a regression
+
+Select a recorded real baseline violation and choose **Minimize failure → generate test**. Wind Tunnel replays the exact tool calls, removes irrelevant calls while preserving the same action-policy rule, and exports a runnable Node test for the repository. The recorded split-refund witness reduces from **3 calls to 2**; the injected-note action boundary reduces from **2 to 1**.
+
+The result is a 1-minimal ordered tool subsequence, not a globally shortest attack or proof of prompt/model causality. The exported test verifies the baseline witness and enforced guard, without calling a model. Tests confirm it fails when enforcement is deliberately broken. [Scope and reproduction](docs/REGRESSIONS.md).
+
 ## Check the checks
 
 **The evaluator needs testing too.** Open **Assurance lab** in the public demo and run the free safeguard check. It deliberately removes one safeguard at a time in an isolated execution: ownership, expiry, remaining balance, automatic ceiling, cumulative split handling, integer cents, legitimate-task utility, and state accounting.

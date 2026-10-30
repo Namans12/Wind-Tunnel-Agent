@@ -14,6 +14,10 @@ No sign-in or API key is needed for the default experience. All customer records
 5. Compare the modes and models. Both enforced recorded configurations retained 4/4 legitimate refunds. Each displayed configuration is one run of 12 authored cases, not a statistical ranking.
 6. Export the evidence. Alternatively, configure and run the free scripted simulation; its results are labeled and do not measure Nemotron.
 
+## Turn the observed failure into a test
+
+In the recorded Lightning baseline, select **Death by two refunds → Minimize failure → generate test**. Three calls reduce to two retained refunds. Inspect the exact arguments and both replay outcomes, then download the Node regression and save it into the repository’s tests/ folder. npm test runs it without inference credits. This isolates an action-boundary witness, not the model’s reasoning.
+
 ## Check the evaluator itself
 
 Open **Assurance lab → Run safeguard check**. It uses no API key or tokens. The unmodified controls should pass 10/10 probes; eight intentionally broken controls are checked individually. Select a fault to see the witness, independent rule finding, and original/final state. Export the report. “Caught” describes that deliberate fault and probe, not general safety.

@@ -18,6 +18,10 @@ Run a Nemotron agent through the same scenarios in two modes. Baseline deliberat
 
 Every result has an inspectable request, tool call, returned result, state outcome, usage, latency, and estimated cost. Recorded real inference is clearly labeled; free scripted simulation is separate. Inconclusive runs never become safety passes.
 
+## From failure to a test you can keep
+
+A dashboard finding can become a runnable regression. Select a real recorded baseline violation, minimize its ordered tool sequence while preserving the same action-policy rule, and export a Node test for the repository. The recorded split-refund example shrinks from three calls to two. The test reproduces the baseline witness and checks that enforcement prevents the same rule; automated verification deliberately breaks the guard to confirm the generated test fails. This is deterministic tool replay, not a replay of model reasoning or prompt causality.
+
 ## Check the checks
 
 The Assurance lab deliberately breaks eight safeguards in isolated executions. A separately implemented checker replays raw tool results and final state without trusting the original policy decision or violation flags.
