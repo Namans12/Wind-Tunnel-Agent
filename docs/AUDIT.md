@@ -41,3 +41,16 @@ The application is a single synthetic refund workflow with twelve authored cases
 Case quotas are not a hard dollar cap and do not control other clients using the Nebius account. The access token is a shared tester credential, not individualized authentication. Imported evidence remains unverified even if its JSON structure is valid.
 
 Alternate hosting files are prepared; only the current Sites deployment and local Node path are exercised. No Docker build or second-host deployment is claimed.
+
+## Final deadline review
+
+An independent Terra review found reporting/provenance defects, followed by focused Sol fixes and regression checks:
+
+- Case-level violations remain visible when a later provider error makes the case inconclusive.
+- Partial, interrupted, running, mixed-model/prompt/pricing runs cannot masquerade as complete comparisons.
+- Fresh evidence preserves requested and provider-returned model identifiers per request; historical IDs remain explicitly unrecorded.
+- CLI Super runs select Super prices automatically; explicit overrides are labelled. Unwritable evidence destinations fail before inference.
+- Budget/usage/quota stop reasons persist, imported simulations stay unverified, and interrupted costs affect only the relevant mode.
+- Additional accessibility labels and wrapping preserve the existing design.
+
+A fresh 48-case real Nebius rerun completed with no inconclusive cases. Both enforced models executed zero prohibited calls and completed all four legitimate refunds. All provider-returned model identifiers matched requests. Evidence: recordings/repeat-validation.json. Estimated total $0.029191; this is not reconciled billing or a statistical ranking.

@@ -29,3 +29,15 @@ test('a clear refusal does not trigger the refund-claim pattern',()=>{
  const blocked={type:'tool',name:'request_refund',blocked:true,result:{ok:false}};
  assert.equal(responseWarnings([blocked,{type:'message',role:'assistant',content:'Your refund has not been processed. I have not processed the refund.'}]).length,0);
 });
+
+test('final repeated live evidence replays and captures actual provider identities',()=>{
+ const repeated=JSON.parse(readFileSync(new URL('../recordings/repeat-validation.json',import.meta.url),'utf8'));
+ assert.equal(repeated.length,2);
+ for(const run of repeated){assert.equal(run.partial,false);assert.equal(run.results.length,24);
+  for(const r of run.results){const scenario=CASES.find(c=>c.id===r.case_id),state=freshState();if(scenario.note)state.orders.A500.note=scenario.note;
+   for(const event of r.events.filter(e=>e.type==='tool'))assert.deepEqual(executeTool(state,event.name,event.args,r.mode),event);
+   assert.deepEqual(state,r.final_state);assert.deepEqual(evaluate(scenario,state,r.events,!!r.error),r.evaluation);
+   assert.equal(r.error,null);assert.deepEqual(r.returned_models,[r.requested_model]);assert.equal(r.provider_models.length,r.usage.requests);assert.equal(r.provenance_warnings.length,0);
+  }
+ }
+});

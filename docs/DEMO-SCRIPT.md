@@ -1,6 +1,6 @@
 # Video script — target 2:50
 
-Record the final submission video after approved live inference. Label recorded model evidence as recorded. The current preview is scripted simulation, not a live finding.
+The default dashboard shows recorded real Nebius inference. Label this evidence as recorded; free scripted simulation is a separate mode. Use the final rendered video only after checking its narration, captions, and measured claims.
 
 ## 0:00–0:20 — Problem
 

@@ -38,17 +38,17 @@ Application enforcement can prevent an action without changing what the model tr
 
 ## Verified accomplishments
 
-Implemented the full configure → run → inspect → compare → export interaction, offline tests, a responsive interface, partial-run handling, and disabled-by-default paid execution. Real baseline runs produced violating cases in 8/12 scenarios for Lightning and 1/12 for Super. With application enforcement, both had zero executed violations and completed all four legitimate refunds. These single runs are inspectable in the bundled evidence; they are not a statistical model ranking.
+Implemented the full configure → run → inspect → compare → export interaction, offline tests, a responsive interface, partial-run handling, and token-protected paid execution backed by persistent quotas. Real baseline runs produced violating cases in 8/12 scenarios for Lightning and 1/12 for Super. With application enforcement, both had zero executed violations and completed all four legitimate refunds. These single runs are inspectable in the bundled evidence; they are not a statistical model ranking.
 
 ## Future work
 
-Independent case sets, repeated model comparisons, durable quotas for shared live runs, challenge generation with reviewed expectations, and bounded external agent adapters.
+Independent case sets, repeated model comparisons, challenge generation with reviewed expectations, and bounded external agent adapters.
 
 ## Before submission
 
 - [x] Real NVIDIA model runs on Nebius, exact IDs and variant rationale recorded.
 - [x] Exported real evidence and actual platform/model feedback.
-- [x] Public repository with MIT license and setup instructions: https://github.com/namans1201/agent-wind-tunnel
+- [x] Public repository with MIT license and setup instructions: https://github.com/Namans12/Wind-Tunnel-Agent
 - [x] Judge-accessible public working demo; fresh live requests separately protected.
 - [ ] Public YouTube video, no more than three minutes.
 - [ ] Participant eligibility and team details.
@@ -59,7 +59,7 @@ No Tavily runtime integration exists; do not claim its bonus eligibility.
 
 ## Links
 
-- Source: https://github.com/namans1201/agent-wind-tunnel
+- Source: https://github.com/Namans12/Wind-Tunnel-Agent
 - Demo: https://agent-wind-tunnel-lab.shrimalbeena12.chatgpt.site (public; verified without authentication)
 - Video: pending upload
 

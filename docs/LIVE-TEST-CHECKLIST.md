@@ -1,4 +1,4 @@
-# Deferred live verification
+# Live verification and judge access
 
 **Owner approved live verification. Completed: model discovery, small tool-call smoke tests, 48-case two-model evaluation, and a real local HTTP endpoint check.**
 
@@ -27,6 +27,6 @@ Recorded evidence: `recordings/verified-runs.json`. Further runs still spend tok
 
 - Arrange testing without exposing secrets.
 - Keep anonymous live calls disabled.
-- Add durable quota/rate controls before distributing paid access widely.
+- Persistent daily/minute quotas are implemented; keep the separate tester token private.
 - Provide labeled recorded evidence plus a reproducible working test build if live access is restricted.
 - Verify the final access arrangement against event requirements.

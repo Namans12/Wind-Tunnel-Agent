@@ -6,6 +6,12 @@ A reliability lab for a tool-using support agent. Run legitimate and adversarial
 
 Built for the Nebius x NVIDIA Global AI Hackathon. Suggested track: Best Apps and Agents; finalize against the live event form.
 
+## Try it
+
+**[Open the public demo](https://agent-wind-tunnel-lab.shrimalbeena12.chatgpt.site)** · [Judge walkthrough](docs/JUDGES.md) · [Audit scope](docs/AUDIT.md)
+
+No sign-in is required. Inspect recorded real evidence, run a free simulation, compare policy modes, and export traces. Fresh paid inference requires a private tester token; the Nebius API key is never entered into the browser.
+
 ## Verified live results — 30 October 2026
 
 The default report contains **recorded real inference**, not scripted model behavior. It loads without spending tokens. Simulation is separately labeled. Fresh live calls require the configured run token and explicit UI acknowledgment.
@@ -24,6 +30,10 @@ Exact IDs: `nvidia/Nemotron-3_5-Lightning` and `nvidia/nemotron-3-super-120b-a12
 The two full suites used 136 provider requests and 141,333 input/output tokens in total. Real customer data and real payment tools were never used. Evidence is in `recordings/verified-runs.json`; replay tests reconstruct its tool outcomes offline.
 
 Verified: live tools and the HTTP endpoint, local browser behavior, offline tests, Worker packaging. The paid endpoint is token-protected; no API key is returned to the browser. Public/owner access is managed separately by Sites.
+
+## Repeat validation
+
+A fresh 48-case rerun after the final code review reproduced 8/12 violating baseline cases for Lightning and 1/12 for Super. Both enforced configurations again completed 4/4 legitimate refunds with zero prohibited calls executed and no inconclusive cases. The provider-returned model IDs matched the requested IDs on every request. Total estimated rerun cost: $0.029191. The original dashboard evidence is preserved; the new complete traces are in `recordings/repeat-validation.json`. Two observations per configuration remain too few for a statistical model ranking.
 
 ## Run locally
 
@@ -89,7 +99,7 @@ estimated_cost_usd =
    + completion_tokens * output_price_per_million) / 1,000,000
 ```
 
-Prices are user supplied. Record their source/date when publishing real results. Missing usage means cost unknown. Scripted simulation has zero model requests and inference tokens; its results must not be cited as Nemotron performance.
+Known preset prices are selected server-side; other owner-configured models require explicit prices. Record their source/date when publishing real results. Missing usage means cost unknown. Scripted simulation has zero model requests and inference tokens; its results must not be cited as Nemotron performance.
 
 ## Architecture
 
@@ -111,13 +121,13 @@ Browser → /api/run → bounded agent loop ↔ Nemotron on Nebius
 - `scripts/compose.mjs`: embeds the interface in the Worker module.
 - `worker/index.js`: generated deployment source; regenerate after edits.
 - `tests/`: offline policy, protocol, endpoint, and frontend syntax checks.
-- `docs/`: submission draft, video script, feedback log, deferred live verification.
+- `docs/`: judge instructions, submission draft, video script, feedback, and live verification checklist.
 
 Evidence includes the model ID, prompt, suite version, modes, timestamps, tool arguments/results, evaluations, usage, and prices. Comparison requires matching configurations. Browser history stores up to eight runs; export anything important. There is no shared durable run database. Temperature zero does not guarantee identical reruns.
 
 ## Hosting and submission
 
-The demo is public and was verified without authentication. Recorded real evidence and free simulations are available to everyone. Fresh inference requires the separate live-run token; share it privately with authorized testers. No API key is exposed. Real inference, model feedback, and public source publication are complete. A 2:25 narrated walkthrough has been produced locally. Public YouTube upload, participant form details, and final submission approval remain required. Public app access and a protected hosted live request were verified.
+The demo is public and was verified without authentication. Recorded real evidence and free simulations are available to everyone. Fresh inference requires the separate live-run token; share it privately with authorized testers. No API key is exposed. Real inference, model feedback, and public source publication are complete. A narrated walkthrough has been produced locally; the final video and upload status are tracked in the handoff. Public YouTube upload, participant form details, and final submission approval remain required. Public app access and a protected hosted live request were verified.
 
 See `docs/SUBMISSION-DRAFT.md`, `docs/DEMO-SCRIPT.md`, and `docs/LIVE-TEST-CHECKLIST.md`. Preparation is not submission.
 
