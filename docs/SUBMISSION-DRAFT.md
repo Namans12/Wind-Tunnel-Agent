@@ -42,7 +42,7 @@ In the original recorded twelve-case comparison, Lightning’s baseline executed
 
 A fresh full comparison reproduced those case-level outcomes. The two observations per configuration remain too few for statistical model rankings. The original enforced suites cost an estimated $0.0028 for Lightning and $0.0120 for Super using measured tokens and catalog prices; those estimates are not billing statements.
 
-Verification includes 87 passing automated tests, green repository CI, replay of 96 real recorded case evaluations, hosted checks, and fresh real inference with the second checker.
+Verification includes 102 passing automated tests, green repository CI, replay of 96 real recorded case evaluations, hosted checks, and fresh real inference with the second checker.
 
 ## Challenges and lessons
 
@@ -59,5 +59,5 @@ Bring in independently authored scenarios, repeat evaluations across more runs, 
 - Suggested track: **Best Apps and Agents**; confirm the exact option in the live submission form.
 - Demo: https://agent-wind-tunnel-lab.shrimalbeena12.chatgpt.site/
 - Repository: https://github.com/Namans12/Wind-Tunnel-Agent
-- Video: upload **Agent-Wind-Tunnel-Submission-Demo.mp4** (2:50), then paste the public YouTube URL.
+- Video: upload **Agent-Wind-Tunnel-Regression-Demo.mp4** (2:52), then paste the public YouTube URL.
 - Tavily runtime integration: none; no Tavily bonus eligibility is claimed.
