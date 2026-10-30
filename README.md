@@ -1,6 +1,6 @@
 # Agent Wind Tunnel
 
-**Find the failure. Follow the evidence. Keep the useful work.**
+**Expose agent failures. Check whether your safeguards can catch them.**
 
 A reliability lab for a tool-using support agent. Run legitimate and adversarial refund scenarios, inspect tool calls, compare application enforcement, and export evidence.
 
