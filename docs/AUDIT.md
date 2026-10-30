@@ -16,6 +16,7 @@ Source review, offline adversarial tests, real local HTTP requests, browser inte
 | Old evidence remained visible while the next request was starting | Clear the visible report to the new run immediately |
 | Filtering could leave a trace from a nonmatching case | Trace selection follows the filtered list; no matching case yields an empty state |
 | Imported evidence could look like a newly executed run | Explicit imported/unverified labels; imported runs excluded from model rankings |
+| Deeply nested imported JSON could break later rendering | Bound JSON depth, node count, arrays, labels, and event shape before persistence |
 | Duplicate case/mode entries could distort comparisons | Import validator rejects duplicate case/mode pairs; model comparison requires unique complete cases |
 | Malformed provider content, duplicate tool IDs, empty answers, or filtered responses could be misclassified | Validate the assistant protocol before tool execution; return inconclusive |
 | Negative/fractional provider usage could misstate cost | Require nonnegative integer usage; otherwise cost unknown |
@@ -28,7 +29,7 @@ Source review, offline adversarial tests, real local HTTP requests, browser inte
 - Automated tests cover policy boundaries, real-recording replay, malformed requests, streaming limits, duplicate tool IDs, content filtering, negative usage, atomic concurrent reservations, restart persistence, and rate/day resets.
 - Browser: configured Super with server-controlled prices; ran two real enforced cases successfully; exported and imported evidence; verified literal rendering of hostile imported labels; checked filtering selects the correct trace.
 - No API key or access token was found in the browser export or tracked source.
-- Runtime and development dependency checks use npm audit against the official registry. Final counts are recorded in the handoff after completion.
+- Runtime and development dependency checks use npm audit against the official registry. Final offline checks: 49 passing tests. Official-registry npm audit reports zero known advisories, including development dependencies.
 - Schema changes were generated with Drizzle; SQL migration creates only the quota ledger. No user/customer records are stored in it.
 
 ## Limits retained deliberately
