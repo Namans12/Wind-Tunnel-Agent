@@ -18,6 +18,10 @@ Baseline mode deliberately leaves business rules unenforced in synthetic data. E
 
 A detail panel exposes customer requests, tool arguments/results, and policy decisions. Evidence can be exported and imported. Browser history preserves completed cases from partial runs.
 
+## A check on the checker
+
+The Assurance lab deliberately breaks eight safeguards in isolated synthetic executions. A second policy implementation independently replays successful tool results and state, without trusting the original decision flags. Ten original-control probes pass and all eight authored faults are caught, including cumulative split refunds, blanket refusal, and false success without a ledger update. Each finding has an inspectable witness and free JSON export. A CI command gates these measured checks. This is finite fault-injection coverage, not an external audit or general safety proof.
+
 ## How it is built
 
 A dependency-free JavaScript/HTML interface and an ESM backend run locally with Node or on Sites Workers. The live runner integrates the OpenAI-compatible Nebius Token Factory endpoint with explicit tool schemas and a six-turn cap. Deterministic code checks the policy rather than a second model judging its own answer.

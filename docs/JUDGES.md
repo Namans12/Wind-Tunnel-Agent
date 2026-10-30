@@ -14,6 +14,10 @@ No sign-in or API key is needed for the default experience. All customer records
 5. Compare the modes and models. Both enforced recorded configurations retained 4/4 legitimate refunds. Each displayed configuration is one run of 12 authored cases, not a statistical ranking.
 6. Export the evidence. Alternatively, configure and run the free scripted simulation; its results are labeled and do not measure Nemotron.
 
+## Check the evaluator itself
+
+Open **Assurance lab → Run safeguard check**. It uses no API key or tokens. The unmodified controls should pass 10/10 probes; eight intentionally broken controls are checked individually. Select a fault to see the witness, independent rule finding, and original/final state. Export the report. “Caught” describes that deliberate fault and probe, not general safety.
+
 ## Fresh model execution
 
 New paid inference is restricted to authorized testers. Request the separate run-access token privately from the participant, or reproduce locally with your own Nebius key using the README. Never use the Nebius API key as a browser access token. Select a model, choose cases, acknowledge charges, and run. Global persistent quotas may reject further requests; recorded evidence and simulation remain available.

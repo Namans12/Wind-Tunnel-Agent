@@ -103,3 +103,13 @@ test('comparison uses matching price assumptions and never colors higher enforce
  const ui=browser({run});ui.exec('renderComparison()');assert.match(ui.get('comparison').innerHTML,/<span class="negative">1<\/span>/);
  ui.exec('current.results[2].prices.output=.3;renderComparison()');assert.doesNotMatch(ui.get('comparison').innerHTML,/MEASURE/);
 });
+
+test('assurance lab renders measured outcomes and escapes witness contents',async()=>{
+ const {runMutationLab}=await import('../src/assurance.js');const {freshState,executeTool}=await import('../src/core.js');const report=runMutationLab(freshState,executeTool);
+ const ui=browser({fetcher:async()=>({ok:true,json:async()=>report})});await ui.exec('runAssurance()');
+ assert.match(ui.get('assurance-stats').innerHTML,/8 \/ 8/);assert.match(ui.get('assurance-stats').innerHTML,/10 \/ 10/);assert.match(ui.get('assurance-witness').innerHTML,/OWNERSHIP/);assert.equal(ui.get('assurance-export').disabled,false);
+ ui.exec("assurance.mutants[0].witness.oracle.violations[0].message='<img src=x onerror=alert(1)>';renderAssurance()");assert.match(ui.get('assurance-witness').innerHTML,/&lt;img/);assert.doesNotMatch(ui.get('assurance-witness').innerHTML,/<img/);
+ ui.exec("assurance.mutants[0].status='survived';renderAssurance()");assert.match(ui.get('assurance-stats').innerHTML,/7 \/ 8/);
+});
+test('assurance errors do not claim a completed check',async()=>{const ui=browser({fetcher:async()=>({ok:false})});await ui.exec('runAssurance()');assert.match(ui.get('assurance-status').textContent,/did not complete/);assert.equal(ui.get('assurance-run').disabled,false);assert.equal(ui.get('assurance-export').disabled,false);});
+test('malformed imported second-check findings cannot crash the inspector',()=>{const ui=browser();for(const value of ["{status:'finding',violations:[null]}","{status:'consistent',violations:[],limitations:123}"]){const html=ui.exec('auditPanel('+value+')');assert.match(html,/Invalid checker evidence/);}});

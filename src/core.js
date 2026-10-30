@@ -1,3 +1,4 @@
+import {auditTrace,runMutationLab} from './assurance.js';
 export const SUITE_VERSION = 'refund-lab-1.0';
 export const TEST_DATE = '2026-10-30';
 export const MODEL_PRESETS = [
@@ -109,7 +110,7 @@ export function runFixture(scenario,mode){
     if(mode==='enforced'&&event.blocked&&event.check.code==='AUTO_LIMIT'&&scenario.expect.kind==='escalate')events.push(executeTool(state,'escalate_to_human',{order_id:args.order_id,reason:'Fixture fallback after blocked automatic refund'},mode));
   }
   events.push({type:'message',role:'assistant',content:'Illustrative scripted response. Inspect the tool trace for the actual simulated outcome.'});
-  return {case_id:scenario.id,title:scenario.title,category:scenario.category,source:'simulation',model:'Scripted fixture · no model',mode,suite_version:SUITE_VERSION,prompt:DEFAULT_PROMPT,started_at:new Date().toISOString(),events,evaluation:evaluate(scenario,state,events),usage:{prompt_tokens:0,completion_tokens:0,requests:0,missing:false},latency_ms:0,estimated_cost_usd:0,final_state:state};
+  return {independent_audit:auditTrace(prepare(scenario),events,state,scenario.expect),case_id:scenario.id,title:scenario.title,category:scenario.category,source:'simulation',model:'Scripted fixture · no model',mode,suite_version:SUITE_VERSION,prompt:DEFAULT_PROMPT,started_at:new Date().toISOString(),events,evaluation:evaluate(scenario,state,events),usage:{prompt_tokens:0,completion_tokens:0,requests:0,missing:false},latency_ms:0,estimated_cost_usd:0,final_state:state};
 }
 export async function runLive(scenario,config,env,fetcher=fetch,signal){
   if(!isValidModelId(config.model))throw new Error('Invalid requested model identifier.');
@@ -154,9 +155,10 @@ export async function runLive(scenario,config,env,fetcher=fetch,signal){
   }
   if(!done&&!error){error='Agent reached the six-turn limit.';events.push({type:'error',content:error});}
   for(const entry of provider_models)if(entry.returned_model===null&&!provenance_warnings.some(w=>w.startsWith('Request '+entry.request+':')))provenance_warnings.push('Request '+entry.request+': no provider model identifier was captured.');
-  return {case_id:scenario.id,title:scenario.title,category:scenario.category,source:'live',model:config.model,requested_model:config.model,provider_models,returned_models:[...new Set(provider_models.map(x=>x.returned_model).filter(Boolean))],provenance_warnings,mode:config.mode,suite_version:SUITE_VERSION,prompt:config.prompt||DEFAULT_PROMPT,started_at:new Date(start).toISOString(),events,evaluation:evaluate(scenario,state,events,!done),response_warnings:responseWarnings(events),usage,latency_ms:Date.now()-start,estimated_cost_usd:estimateCost(usage,config.prices),prices:config.prices,pricing_model:config.model,...(config.pricing_source?{pricing_source:config.pricing_source}:{}),error,final_state:state};
+  return {independent_audit:auditTrace(prepare(scenario),events,state,scenario.expect,!done),case_id:scenario.id,title:scenario.title,category:scenario.category,source:'live',model:config.model,requested_model:config.model,provider_models,returned_models:[...new Set(provider_models.map(x=>x.returned_model).filter(Boolean))],provenance_warnings,mode:config.mode,suite_version:SUITE_VERSION,prompt:config.prompt||DEFAULT_PROMPT,started_at:new Date(start).toISOString(),events,evaluation:evaluate(scenario,state,events,!done),response_warnings:responseWarnings(events),usage,latency_ms:Date.now()-start,estimated_cost_usd:estimateCost(usage,config.prices),prices:config.prices,pricing_model:config.model,...(config.pricing_source?{pricing_source:config.pricing_source}:{}),error,final_state:state};
 }
 
+function recordingAudit(result){const scenario=CASES.find(c=>c.id===result.case_id);return auditTrace(scenario?prepare(scenario):null,result.events,result.final_state,scenario?.expect,!!result.error||result.evaluation?.inconclusive===true);}
 function json(value,status=200){return new Response(JSON.stringify(value),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});}
 function liveEnabled(env){return env.LIVE_INFERENCE_ENABLED==='true'&&!!env.NEBIUS_API_KEY&&!!env.RUN_ACCESS_TOKEN&&!!env.NEBIUS_MODEL&&!!env.DB;}
 function authorized(request,env){return liveEnabled(env)&&request.headers.get('X-Run-Token')===env.RUN_ACCESS_TOKEN;}
@@ -194,7 +196,8 @@ async function scriptPolicy(page){
 }
 export async function handleRequest(request,env={},page='',recordings=[]){
   const url=new URL(request.url);
-  if(url.pathname==='/api/recordings'&&request.method==='GET')return json({recordings:recordings.map(r=>({...withModelProvenance(r),results:r.results.map(x=>({...withModelProvenance(x),response_warnings:responseWarnings(x.events)}))}))});
+  if(url.pathname==='/api/assurance'&&request.method==='GET')return json(runMutationLab(freshState,executeTool));
+  if(url.pathname==='/api/recordings'&&request.method==='GET')return json({recordings:recordings.map(r=>({...withModelProvenance(r),results:r.results.map(x=>({...withModelProvenance(x),independent_audit:recordingAudit(x),response_warnings:responseWarnings(x.events)}))}))});
   if(url.pathname==='/api/config'&&request.method==='GET')return json({suite_version:SUITE_VERSION,cases:CASES,prompt:DEFAULT_PROMPT,live_enabled:liveEnabled(env),model:env.NEBIUS_MODEL||'',models:permittedModels(env),quota:{daily:limit(env.MAX_DAILY_CASES,60,500),per_minute:limit(env.MAX_MINUTE_CASES,24,60)},pricing_date:'2026-10-30'});
   if(url.pathname==='/api/run'&&request.method==='POST'){
     if(request.headers.get('Origin')&&request.headers.get('Origin')!==url.origin)return json({error:'Cross-origin run requests are not allowed.'},403);

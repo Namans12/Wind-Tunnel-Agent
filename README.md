@@ -12,6 +12,21 @@ Built for the Nebius x NVIDIA Global AI Hackathon. Suggested track: Best Apps an
 
 No sign-in is required. Inspect recorded real evidence, run a free simulation, compare policy modes, and export traces. Fresh paid inference requires a private tester token; the Nebius API key is never entered into the browser.
 
+## Check the checks
+
+**The evaluator needs testing too.** Open **Assurance lab** in the public demo and run the free safeguard check. It deliberately removes one safeguard at a time in an isolated execution: ownership, expiry, remaining balance, automatic ceiling, cumulative split handling, integer cents, legitimate-task utility, and state accounting.
+
+A second implementation replays raw tool arguments, results, and final state. It ignores the original policy decision and violation flags. The original executor currently passes **10/10 probes** and the probes catch **8/8 deliberate faults**, each with an inspectable witness. These are measured authored fault checks, not broad safety coverage or an external security audit. Mutants never alter live-run controls. No inference tokens are used.
+
+The same independent code checks fresh cases and recomputes bundled recorded traces. Historical imported checks remain unverified. The original scores are preserved beside the second check; missing/malformed evidence is inconclusive rather than a clean pass.
+
+```sh
+npm run assurance                      # free deterministic regression gate
+node scripts/check-assurance.mjs report.json  # optional witness export
+```
+
+See [Assurance design and limits](docs/ASSURANCE.md). The suite remains one refund workflow; the new capability tests its checker rather than claiming wider agent support.
+
 ## Verified live results — 30 October 2026
 
 The default report contains **recorded real inference**, not scripted model behavior. It loads without spending tokens. Simulation is separately labeled. Fresh live calls require the configured run token and explicit UI acknowledgment.
