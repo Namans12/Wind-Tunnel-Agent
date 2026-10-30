@@ -27,7 +27,7 @@ Verified: live tools and the HTTP endpoint, local browser behavior, offline test
 
 ## Run locally
 
-Node.js 22.9+ or newer. No external packages or dependency installation required.
+Node.js 24 LTS recommended (22.13+ required for the local SQLite adapter). Serving, tests, and artifact building use Node built-ins; editing the database schema requires the pinned development tools via npm ci.
 
 ```sh
 npm run dev
@@ -41,7 +41,7 @@ npm run build    # compose Worker source and build artifact
 npm run validate # validate Worker ESM
 ```
 
-The local server binds to loopback. The production artifact targets Sites Workers. Running the Node server on another host requires deliberate network binding and access controls.
+The local server binds to loopback by default. Set HOST=0.0.0.0 only for an intentional external deployment. Sites production uses a Cloudflare D1 quota ledger. The portable Node server uses SQLite at QUOTA_DB_PATH (default .local-state/quota.sqlite); mount persistent storage when hosting it elsewhere. See docs/HOSTING.md and the included Dockerfile/render.yaml.
 
 ## Policies and outcomes
 
@@ -61,7 +61,7 @@ Baseline deliberately leaves business rules unenforced inside fictional data. En
 
 The evidence retains executed violations even if a later error makes the case inconclusive. Positive controls require exact refund state, so blanket refusal cannot count as customer success. Denial cases check prohibited actions, not explanation quality.
 
-The enforced system is evaluated against rules it implements. That demonstrates application controls, not independent proof that a model improved. Twelve authored cases do not prove general safety. Text privacy checks cover one known fixture marker, not arbitrary personal data.
+The enforced system is evaluated against rules it implements. That demonstrates application controls, not independent proof that a model improved. Twelve authored cases do not prove general safety. Text privacy checks cover one known fixture marker, not arbitrary personal data. A separate pattern-based review flag highlights some unsupported refund claims after a tool rejection; it is not a general semantic correctness score.
 
 ## Run a new live evaluation
 
@@ -73,11 +73,11 @@ The enforced system is evaluated against rules it implements. That demonstrates 
 6. In Configure select live mode, enter the separate access token and current prices, choose two cases in one mode, and acknowledge potential charges.
 7. Inspect actual usage and outcomes before expanding the test budget.
 
-The browser keeps the access token in memory for the tab and never exports it. The server accepts only the configured model, calls a fixed Nebius origin, and never returns the API key.
+The browser keeps the access token in memory for the tab and never exports it. The server accepts only owner-allowed models, calls a fixed Nebius origin, and never returns the API key. NEBIUS_ALLOWED_MODELS enables a Lightning/Super selector. Catalog prices are enforced server-side for those models.
 
 Each case allows at most six requests, eight tool calls per response, 1,500 completion tokens per request, and a 30-second timeout per request. The UI runs cases sequentially and supports cancellation. No automatic retries occur.
 
-The browser checks an estimated spending threshold between cases and stops if usage is missing. **This is not an account-wide hard billing cap:** an individual case may exceed the threshold, prices can change, and other clients may consume credits. There is no distributed global quota/rate limiter. Keep the run token private. Public visitors can inspect recorded evidence and run free simulations; only token holders can start paid inference. Add durable quotas before widening paid access.
+The browser checks an estimated spending threshold between cases and stops if usage is missing. **This is not an account-wide hard billing cap:** an individual case may exceed the threshold, prices can change, and other clients may consume credits. The live HTTP endpoint now reserves cases atomically in persistent storage, with defaults of 60 per UTC day and 24 per minute across the site. Quota/storage failures prevent inference. Reservations are conservative and are not refunded on errors or minute-limit rejection. Keep the run token private; unauthorized requests cannot consume quota. CLI evaluations use their own local budget controls and do not use the hosted quota ledger.
 
 ## Usage and cost
 
@@ -144,3 +144,9 @@ This command spends tokens. Set the exact model and its prices with `--model`, `
 ## Customer-facing wording limitation
 
 The recorded enforced Lightning injection case correctly escalated without a refund, but its final response still implied a refund had been initiated. The application shows this wording verbatim. Current task scores cover tool/state outcomes; they do not establish response truthfulness. This is a concrete remaining improvement, not hidden by a passing policy result.
+
+## Security and robustness audit
+
+The follow-up audit added bounded streamed JSON parsing, malformed-response validation, durable atomic quota reservations, server-side model/pricing constraints, script-hash CSP, safe import labels, cancellation usage warnings, and a truthful paid/live button label. See docs/AUDIT.md for scope and remaining limits. Local browser verification included two real Super cases, export/import, malicious-label handling, and filtered trace selection.
+
+The runtime has no third-party JavaScript dependencies. Development dependencies are pinned and the vulnerable transitive esbuild version is overridden; npm audit against the official registry reports zero known advisories at the audit time. This is not an OS/container vulnerability scan.

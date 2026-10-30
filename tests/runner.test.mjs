@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {runLive,CASES,DEFAULT_PROMPT,handleRequest,estimateCost} from '../src/core.js';
-const env={NEBIUS_API_KEY:'FAKE_TEST_KEY',NEBIUS_MODEL:'test-nemotron',RUN_ACCESS_TOKEN:'FAKE_ACCESS',LIVE_INFERENCE_ENABLED:'true'};
+import {createLocalDB} from '../scripts/local-db.mjs';
+const env={NEBIUS_API_KEY:'FAKE_TEST_KEY',NEBIUS_MODEL:'test-nemotron',RUN_ACCESS_TOKEN:'FAKE_ACCESS',LIVE_INFERENCE_ENABLED:'true',DB:createLocalDB(':memory:')};
 const config={mode:'enforced',model:env.NEBIUS_MODEL,prompt:DEFAULT_PROMPT,prices:{input:1,output:2}};
 function reply(message,usage={prompt_tokens:100,completion_tokens:20},finish_reason='stop'){return new Response(JSON.stringify({choices:[{message,finish_reason}],usage}),{headers:{'Content-Type':'application/json'}});}
 function tool(name,args,id='t1'){return {id,type:'function',function:{name,arguments:JSON.stringify(args)}};}
@@ -12,7 +13,7 @@ test('mocked inference executes tools, keeps protocol history and counts tokens 
 test('mocked malicious tool intent is blocked before mutation',async()=>{
  let n=0;const r=await runLive(CASES[5],config,env,async()=>++n===1?reply({role:'assistant',tool_calls:[tool('request_refund',{order_id:'B900',amount_cents:6500,reason:'Test'})]}):reply({role:'assistant',content:'I cannot refund that order.'}));assert.equal(r.evaluation.status,'blocked');assert.equal(r.final_state.orders.B900.refunded_cents,0);
 });
-test('malformed model arguments are inconclusive',async()=>{const r=await runLive(CASES[0],config,env,async()=>reply({role:'assistant',tool_calls:[{id:'x',function:{name:'get_order',arguments:'not-json'}}]}));assert.equal(r.evaluation.status,'inconclusive');assert.match(r.error,/Invalid JSON/);});
+test('malformed model arguments are inconclusive',async()=>{const r=await runLive(CASES[0],config,env,async()=>reply({role:'assistant',tool_calls:[{id:'x',type:'function',function:{name:'get_order',arguments:'not-json'}}]}));assert.equal(r.evaluation.status,'inconclusive');assert.match(r.error,/Invalid JSON/);});
 test('invalid typed tool arguments are inconclusive and do not mutate',async()=>{const r=await runLive(CASES[0],config,env,async()=>reply({role:'assistant',tool_calls:[tool('request_refund',{order_id:'A100',amount_cents:-1,reason:'Test'})]}));assert.equal(r.evaluation.status,'inconclusive');assert.equal(r.final_state.orders.A100.refunded_cents,0);});
 test('network and HTTP errors have unknown cost and inconclusive status',async()=>{for(const mock of [async()=>{throw new Error('network')},async()=>new Response('SECRET_PROVIDER_DETAIL',{status:429})]){const r=await runLive(CASES[0],config,env,mock);assert.equal(r.evaluation.status,'inconclusive');assert.equal(r.estimated_cost_usd,null);assert.equal(JSON.stringify(r).includes('SECRET_PROVIDER_DETAIL'),false);}});
 test('missing usage is unknown, never represented as free inference',async()=>{const r=await runLive(CASES[4],config,env,async()=>reply({role:'assistant',content:'Cannot access that order.'},null));assert.equal(r.estimated_cost_usd,null);});
