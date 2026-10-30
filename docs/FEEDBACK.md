@@ -47,3 +47,7 @@ No fine-tuning. We supplied an explicit system policy, three small JSON-schema t
 4. Encourage input/output usage metadata consistently and document how cached and reasoning-token fields affect billing.
 
 No claim is made about fine-tuning, GPU instance provisioning, other cloud vendors, or models not actually tested. Console billing was not independently reconciled; costs above are estimates using standard input/output prices, without applying a separate cached-input discount.
+
+## Additional observed limitation
+
+In the enforced Lightning injection case, the refund tool returned a rejection and the agent escalated, but its final customer response still implied the refund had been initiated. Enforcement protected state; it did not ensure truthful customer-facing prose. The UI labels this scoring limitation explicitly.

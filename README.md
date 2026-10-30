@@ -77,7 +77,7 @@ The browser keeps the access token in memory for the tab and never exports it. T
 
 Each case allows at most six requests, eight tool calls per response, 1,500 completion tokens per request, and a 30-second timeout per request. The UI runs cases sequentially and supports cancellation. No automatic retries occur.
 
-The browser checks an estimated spending threshold between cases and stops if usage is missing. **This is not an account-wide hard billing cap:** an individual case may exceed the threshold, prices can change, and other clients may consume credits. There is no distributed global quota/rate limiter. Keep the Site owner-private until shared live access and durable quotas are deliberately arranged.
+The browser checks an estimated spending threshold between cases and stops if usage is missing. **This is not an account-wide hard billing cap:** an individual case may exceed the threshold, prices can change, and other clients may consume credits. There is no distributed global quota/rate limiter. Keep the run token private. Public visitors can inspect recorded evidence and run free simulations; only token holders can start paid inference. Add durable quotas before widening paid access.
 
 ## Usage and cost
 
@@ -117,7 +117,7 @@ Evidence includes the model ID, prompt, suite version, modes, timestamps, tool a
 
 ## Hosting and submission
 
-The owner-private preview is not yet a public judge-accessible demo. Before submitting, arrange judge access or a protected public demo/test build. Do not expose unlimited paid calls. Real inference, model feedback, and public source publication are complete. A public YouTube video of no more than three minutes, final judge-access verification, event form completion, and final submission approval remain required.
+The demo is public and was verified without authentication. Recorded real evidence and free simulations are available to everyone. Fresh inference requires the separate live-run token; share it privately with authorized testers. No API key is exposed. Real inference, model feedback, and public source publication are complete. A 2:25 narrated walkthrough has been produced locally. Public YouTube upload, participant form details, and final submission approval remain required. Public app access and a protected hosted live request were verified.
 
 See `docs/SUBMISSION-DRAFT.md`, `docs/DEMO-SCRIPT.md`, and `docs/LIVE-TEST-CHECKLIST.md`. Preparation is not submission.
 
@@ -140,3 +140,7 @@ node --env-file=.env scripts/evaluate.mjs --mode both --limit 12 --budget 0.10
 ```
 
 This command spends tokens. Set the exact model and its prices with `--model`, `--input-price`, and `--output-price` when changing models; defaults are Lightning. Output is written after every case. The budget stop is an estimate checked between cases, not a hard account-wide billing limit.
+
+## Customer-facing wording limitation
+
+The recorded enforced Lightning injection case correctly escalated without a refund, but its final response still implied a refund had been initiated. The application shows this wording verbatim. Current task scores cover tool/state outcomes; they do not establish response truthfulness. This is a concrete remaining improvement, not hidden by a passing policy result.

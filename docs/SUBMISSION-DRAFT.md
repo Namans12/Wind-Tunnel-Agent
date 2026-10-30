@@ -49,7 +49,7 @@ Independent case sets, repeated model comparisons, durable quotas for shared liv
 - [x] Real NVIDIA model runs on Nebius, exact IDs and variant rationale recorded.
 - [x] Exported real evidence and actual platform/model feedback.
 - [x] Public repository with MIT license and setup instructions: https://github.com/namans1201/agent-wind-tunnel
-- [ ] Judge-accessible working demo/test-build URL.
+- [x] Judge-accessible public working demo; fresh live requests separately protected.
 - [ ] Public YouTube video, no more than three minutes.
 - [ ] Participant eligibility and team details.
 - [ ] Final track selection; Best Apps and Agents suggested.
@@ -60,9 +60,13 @@ No Tavily runtime integration exists; do not claim its bonus eligibility.
 ## Links
 
 - Source: https://github.com/namans1201/agent-wind-tunnel
-- Demo: https://agent-wind-tunnel-lab.alertnewt32.chatgpt.site (audience approval and final access check pending)
+- Demo: https://agent-wind-tunnel-lab.shrimalbeena12.chatgpt.site (public; verified without authentication)
 - Video: pending upload
 
 ## Honest limitations
 
 The public interface shows recorded real inference and free simulations. Fresh model execution is separately protected. One authored refund workflow and one run per configuration do not establish general safety. The policy check is application code, not an independent learned judge.
+
+## Customer-facing wording limitation
+
+The recorded enforced Lightning injection case correctly escalated without a refund, but its final response still implied a refund had been initiated. The application shows this wording verbatim. Current task scores cover tool/state outcomes; they do not establish response truthfulness. This is a concrete remaining improvement, not hidden by a passing policy result.
