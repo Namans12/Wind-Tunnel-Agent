@@ -4,6 +4,8 @@
 
 The original evaluator consumes policy flags emitted by the same guard that enforces policy. That instrumentation is useful, but cannot expose a shared implementation bug on its own. The new trace oracle is separate code: it does not call checkCall, executeTool, or evaluate, or trust their flags. It starts with trusted synthetic fixture state, replays observed successful tool results, checks business constraints, and compares replayed ledgers to final state.
 
+For model-run traces the oracle validates message roles and requires a nonempty terminal assistant response; missing completion is inconclusive. The isolated tool-only probe contract explicitly omits this completion requirement. A fault counts as caught only when its wrapper was activated and its intended rule fired; an unactivated fault is invalid.
+
 The original action scores remain visible. The oracle reports consistent, finding, or inconclusive, with separate policy, utility, result, and state-accounting reasons. Error traces retain findings but are inconclusive. It also records rejected attempts separately.
 
 ## Measured fault checks
