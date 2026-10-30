@@ -35,4 +35,4 @@ This is a second implementation of the same authored policy, not an external sec
 
 ## Verification limit
 
-The addition passed automated backend/frontend behavioral checks and packaged Worker/HTTP tests. Local browser access was disabled during this addition, so the new page has not received a fresh real-browser visual review. Earlier UI views remain verified; no new visual-verification claim is made.
+The addition passed automated backend/frontend behavioral checks and packaged Worker/HTTP tests. After account access was restored, public version 6 was visually checked and exercised in the real browser: 10/10 original controls,8/8 fault catches, witness inspection, and a generated regression download. Two fresh hosted model cases also passed the independent check.

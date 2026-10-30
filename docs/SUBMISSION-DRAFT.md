@@ -2,7 +2,7 @@
 
 **Expose agent failures. Check whether your safeguards can catch them.**
 
-> Submission copy for participant review. The Assurance upgrade is in the public repository; publishing it to the existing demo is pending reconnection of the owning Sites account. Do not mark that deployment complete until verified.
+> Submission copy for participant review. Both upgrades are published in version 6 and verified through the public interface, API, and downloaded regression test. YouTube upload and participant submission remain yours to complete.
 
 ## Inspiration
 
